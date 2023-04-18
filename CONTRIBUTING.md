@@ -9,15 +9,7 @@ Early adopters and testers are welcome to try out the plugin and provide feedbac
 ## Developing
 
 ### Prerequisites
-- Java SDK 8: This plugin currently only support JDK8. For instructions on how to install, please refer to the [Installation Guide](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html)
-- CDEvents Java SDK: Currently this plugin is not available in the [Maven Central Repository](https://maven.apache.org/repository/) and needs to be compiled locally prior to building this plugin locally
- 
-#### Installing the CDEvents Java SDK
-```shell
-git clone https://github.com/cdevents/sdk-java.git
-cd sdk-java; mvn clean -U install
-cd ..; rm -rf sdk-java
-```
+- Java SDK 11: This plugin currently only support JDK11. For instructions on how to install, please refer to the [Installation Guide](https://docs.oracle.com/en/java/javase/11/install/overview-jdk-installation.html)
 
 ### Testing the Plugin locally
 
