@@ -10,8 +10,7 @@ Early adopters and testers are welcome to try out the plugin and provide feedbac
 
 ### Prerequisites
 
-- Java SDK 11: This plugin currently only support JDK11. For instructions on how to install, please refer to
-  the [Installation Guide](https://docs.oracle.com/en/java/javase/11/install/overview-jdk-installation.html)
+- Java SDK 11: This plugin currently only support JDK11. For instructions on how to install, please refer to the [Installation Guide](https://docs.oracle.com/en/java/javase/11/install/overview-jdk-installation.html)
 
 ### Testing the Plugin locally
 
