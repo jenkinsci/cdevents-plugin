@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.ExtensionList;
 import hudson.util.FormValidation;
@@ -25,6 +26,7 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
     private String kinesisRegion;
     private String kinesisEndpoint;
 
+    @SuppressFBWarnings(value = {"CD_CIRCULAR_DEPENDENCY", "MC_OVERRIDABLE_METHOD_CALL_IN_CONSTRUCTOR"}, justification = "Circular dependency is false positive triggered by jenkins.model.GlobalConfiguration. " + "Overridable method call in constructor is unavoidable.")
     public CDEventsGlobalConfig() {
         load();
     }
@@ -74,8 +76,7 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
 
     public String getKinesisRegion() {
         if (this.kinesisRegion == null) {
-            this.kinesisRegion = Stream.of(System.getenv("AWS_REGION"), System.getenv("AWS_DEFAULT_REGION"))
-                    .filter(Objects::nonNull).findFirst().orElse(null);
+            this.kinesisRegion = Stream.of(System.getenv("AWS_REGION"), System.getenv("AWS_DEFAULT_REGION")).filter(Objects::nonNull).findFirst().orElse(null);
         }
         return this.kinesisRegion;
     }
@@ -112,8 +113,7 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
         return FormValidation.ok();
     }
 
-    public FormValidation doCheckKinesisEndpoint(@QueryParameter("kinesisEndpoint") String kinesisEndpoint,
-                                                 @QueryParameter("kinesisRegion") String kinesisRegion) {
+    public FormValidation doCheckKinesisEndpoint(@QueryParameter("kinesisEndpoint") String kinesisEndpoint, @QueryParameter("kinesisRegion") String kinesisRegion) {
         if (!isNullOrEmpty(kinesisEndpoint) && isNullOrEmpty(kinesisRegion)) {
             FormValidation.error("Kinesis requires a defined region for a custom endpoint");
         }

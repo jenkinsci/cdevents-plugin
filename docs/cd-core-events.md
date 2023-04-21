@@ -3,15 +3,24 @@
 ## Continuous Delivery Core Events
 
 ### Common CDEvent Context Attributes
+
 - `specversion` - The version of the CDEvents specification which the event uses.
-- `id` - (REQUIRED) Identifier for an event. Subsequent delivery attempts of the same event MAY share the same id. This attribute matches the syntax and semantics of the id attribute of CloudEvents.
-- `source` - (REQUIRED) Defines the context in which an event happened. The main purpose of the source is to provide global uniqueness for source + id.
-- `type` - (REQUIRED) Defines the type of event, as combination of a subject, predicate and version. Valid event types are defined in the vocabulary. All event types should be prefixed with dev.cdevents. One occurrence may have multiple events associated, as long as they have different event types. Versions are semantic in the major.minor.patch format. For more details about versions see the the see versioning documentation.
-- `time` - (REQUIRED) Defines the time of the occurrence. When the time of the occurrence is not available, the time when the event was produced MAY be used.
+- `id` - (REQUIRED) Identifier for an event. Subsequent delivery attempts of the same event MAY share the same id. This
+  attribute matches the syntax and semantics of the id attribute of CloudEvents.
+- `source` - (REQUIRED) Defines the context in which an event happened. The main purpose of the source is to provide
+  global uniqueness for source + id.
+- `type` - (REQUIRED) Defines the type of event, as combination of a subject, predicate and version. Valid event types
+  are defined in the vocabulary. All event types should be prefixed with dev.cdevents. One occurrence may have multiple
+  events associated, as long as they have different event types. Versions are semantic in the major.minor.patch format.
+  For more details about versions see the the see versioning documentation.
+- `time` - (REQUIRED) Defines the time of the occurrence. When the time of the occurrence is not available, the time
+  when the event was produced MAY be used.
 - `data` - Contains all the relevant details specific to the event type.
 
 ### Pipeline Run
+
 Additional CDEvent Context Attributes
+
 - `pipelinename` - The name of the pipeline.
 - `url` - url to the pipelineRun.
 
@@ -37,8 +46,10 @@ Pipeline Run: Queued
   }
 }
 ```
+
 ---
 Pipeline Run: Started
+
 ```json
 {
   "specversion" : "0.3",
@@ -72,8 +83,10 @@ Pipeline Run: Started
   }
 }
 ```
+
 ---
 Pipeline Run: Finished
+
 ```
 {
   "specversion" : "0.3",
@@ -111,7 +124,9 @@ Pipeline Run: Finished
 ```
 
 ### Task Run
+
 #### Started
+
 ```
 {
   "specversion" : "0.3",
@@ -132,6 +147,7 @@ Pipeline Run: Finished
 ```
 
 #### Finished
+
 ```
 {
   "specversion" : "0.3",

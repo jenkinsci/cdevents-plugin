@@ -9,10 +9,24 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class StageModel implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String stageName;
     private String stageNodeUrl;
     private Map<String, Object> arguments;
     private String log;
+
+    public StageModel() {
+        super();
+    }
+
+    public StageModel(StageModel that) {
+        this.stageName = that.stageName;
+        this.stageNodeUrl = that.stageNodeUrl;
+        this.arguments = that.arguments == null ? null : Map.copyOf(that.arguments);
+        this.log = that.log;
+    }
 
     public String getStageName() {
         return stageName;
@@ -31,11 +45,12 @@ public class StageModel implements Serializable {
     }
 
     public Map<String, Object> getArguments() {
-        return arguments;
+        if (arguments == null) return null;
+        return Map.copyOf(arguments);
     }
 
     public void setArguments(Map<String, Object> arguments) {
-        this.arguments = arguments;
+        this.arguments = Map.copyOf(arguments);
     }
 
     public String getLog() {

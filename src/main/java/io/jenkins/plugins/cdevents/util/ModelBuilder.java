@@ -6,6 +6,7 @@
 package io.jenkins.plugins.cdevents.util;
 
 import hudson.EnvVars;
+import hudson.console.AnnotatedLargeText;
 import hudson.model.*;
 import io.jenkins.plugins.cdevents.models.*;
 import jenkins.model.Jenkins;
@@ -19,8 +20,7 @@ import java.io.StringWriter;
 
 public class ModelBuilder {
 
-    public static JobModel buildJobModel(Job parent, Run run, TaskListener listener)
-            throws IOException, InterruptedException {
+    public static JobModel buildJobModel(Job parent, Run run, TaskListener listener) throws IOException, InterruptedException {
 
         String rootUrl = Jenkins.get().getRootUrl();
 
@@ -59,16 +59,14 @@ public class ModelBuilder {
         EnvVars envVars = run.getEnvironment(listener);
 
         ScmState scmState = new ScmState();
-        if (envVars != null) {
-            if (envVars.get("GIT_URL") != null) {
-                scmState.setUrl(envVars.get("GIT_URL"));
-            }
-            if (envVars.get("GIT_BRANCH") != null) {
-                scmState.setBranch(envVars.get("GIT_BRANCH"));
-            }
-            if (envVars.get("GIT_COMMIT") != null) {
-                scmState.setCommit(envVars.get("GIT_COMMIT"));
-            }
+        if (envVars.get("GIT_URL") != null) {
+            scmState.setUrl(envVars.get("GIT_URL"));
+        }
+        if (envVars.get("GIT_BRANCH") != null) {
+            scmState.setBranch(envVars.get("GIT_BRANCH"));
+        }
+        if (envVars.get("GIT_COMMIT") != null) {
+            scmState.setCommit(envVars.get("GIT_COMMIT"));
         }
         buildModel.setScmState(scmState);
         if (result != null) {
@@ -124,7 +122,8 @@ public class ModelBuilder {
                 if (logAction != null) {
                     StringWriter writer = new StringWriter();
                     try {
-                        logAction.getLogText().writeLogTo(0, writer);
+                        AnnotatedLargeText logText = logAction.getLogText();
+                        long unused = logText.writeLogTo(0, writer);
                         stageModel.setLog(writer.toString());
                     } catch (IOException e) {
                         throw new RuntimeException(e);

@@ -11,17 +11,17 @@ import dev.cdevents.CDEventTypes;
 import dev.cdevents.constants.CDEventConstants;
 import dev.cdevents.models.PipelineRun;
 import hudson.model.Queue;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.util.ModelBuilder;
 import io.jenkins.plugins.cdevents.util.OutcomeMapper;
-import org.jenkinsci.plugins.workflow.cps.nodes.StepEndNode;
+import org.jenkinsci.plugins.workflow.actions.ErrorAction;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,10 +60,18 @@ public class BuildCDEvent {
         Object pipelineData = ModelBuilder.buildJobModel(run.getParent(), run, listener);
         LOGGER.log(Level.INFO, "Building PipelineRunFinished model for " + pipelineFullName);
 
-        CDEventConstants.Outcome outcome = OutcomeMapper.mapResultToOutcome(Objects.requireNonNull(run.getResult()));
-
-        String errors = outcome == CDEventConstants.Outcome.OutcomeSuccess ? ""
-                : run.getBuildStatusSummary().toString();
+        String errors;
+        CDEventConstants.Outcome outcome;
+        Result runResult = run.getResult();
+        if (runResult != null) {
+            outcome = OutcomeMapper
+                    .mapResultToOutcome(runResult);
+            errors = outcome == CDEventConstants.Outcome.OutcomeSuccess ? ""
+                    : run.getBuildStatusSummary().toString();
+        } else {
+            outcome = CDEventConstants.Outcome.OutcomeError;
+            errors = "Run was not able to produce a result.";
+        }
 
         return CDEventTypes.createPipelineRunFinishedEvent(
                 CDEventConstants.CDEventTypes.PipelineRunFinishedEvent.getEventType(), run.getId(),
@@ -95,17 +103,24 @@ public class BuildCDEvent {
                 displayName,
                 new PipelineRun(), // TODO - implement this
                 URI.create(run.getUrl()),
-                convertToJson(taskRunData)
-        );
+                convertToJson(taskRunData));
     }
 
     public static CloudEvent buildTaskRunFinishedModel(Run run, FlowNode node) {
         String displayName = run.getParent().getFullDisplayName();
         Object taskRunData = ModelBuilder.buildTaskModel(run, node);
 
-        CDEventConstants.Outcome outcome = OutcomeMapper.mapResultToOutcome(((StepEndNode) node).getError());
-        String errors = outcome == CDEventConstants.Outcome.OutcomeSuccess ? ""
-                : ((StepEndNode) node).getError().getDisplayName();
+        String errors;
+        CDEventConstants.Outcome outcome;
+        ErrorAction nodeError = node.getError();
+        if (nodeError != null) {
+            outcome = OutcomeMapper.mapResultToOutcome(nodeError);
+            errors = outcome == CDEventConstants.Outcome.OutcomeSuccess ? ""
+                    : nodeError.getDisplayName();
+        } else {
+            outcome = CDEventConstants.Outcome.OutcomeError;
+            errors = "Unable to get Display Name of the Node Error.";
+        }
 
         LOGGER.info("Building TaskRunFinished model for " + displayName);
 
@@ -118,7 +133,6 @@ public class BuildCDEvent {
                 URI.create(run.getUrl()),
                 outcome,
                 errors,
-                convertToJson(taskRunData)
-        );
+                convertToJson(taskRunData));
     }
 }

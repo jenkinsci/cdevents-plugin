@@ -13,6 +13,8 @@ import java.util.Date;
 
 public class JobModel implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String JENKINS_SOURCE = "org.jenkinsci.job.";
     private String userId;
     private String userName;
@@ -31,6 +33,24 @@ public class JobModel implements Serializable {
     private String configFile;
     @JsonIgnore
     private String stage;
+
+    public JobModel() {
+        super();
+    }
+
+    public JobModel(JobModel that) {
+        this.userId = that.getUserId();
+        this.userName = that.getUserName();
+        this.status = that.getStatus();
+        this.name = that.getName();
+        this.displayName = that.getDisplayName();
+        this.url = that.getUrl();
+        this.build = that.getBuild() == null ? null : new BuildModel(that.getBuild());
+        this.createdDate = that.getCreatedDate() == null ? null : new Date(that.getCreatedDate().getTime());
+        this.updatedDate = that.getUpdatedDate() == null ? null : new Date(that.getUpdatedDate().getTime());
+        this.configFile = that.getConfigFile();
+        this.stage = that.getStage();
+    }
 
     public String getName() {
         return name;
@@ -57,11 +77,12 @@ public class JobModel implements Serializable {
     }
 
     public BuildModel getBuild() {
-        return build;
+        if (build == null) return null;
+        return new BuildModel(build);
     }
 
     public void setBuild(BuildModel build) {
-        this.build = build;
+        this.build = new BuildModel(build);
     }
 
     public String getUserId() {
@@ -81,19 +102,21 @@ public class JobModel implements Serializable {
     }
 
     public Date getCreatedDate() {
-        return createdDate;
+        if (createdDate == null) return null;
+        return new Date(createdDate.getTime());
     }
 
     public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+        this.createdDate = new Date(createdDate.getTime());
     }
 
     public Date getUpdatedDate() {
-        return updatedDate;
+        if (updatedDate == null) return null;
+        return new Date(updatedDate.getTime());
     }
 
     public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+        this.updatedDate = new Date(this.updatedDate.getTime());
     }
 
     public String getStatus() {

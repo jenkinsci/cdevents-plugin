@@ -11,6 +11,7 @@ import java.util.List;
 
 public class QueuedJobModel implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String url;
@@ -19,8 +20,24 @@ public class QueuedJobModel implements Serializable {
     private List<String> causes;
     private long id;
 
+    public QueuedJobModel() {
+        super();
+    }
+
+    public QueuedJobModel(QueuedJobModel that) {
+        this.name = that.getName();
+        this.url = that.getUrl();
+        this.userId = that.getUserId();
+        this.userName = that.getUserName();
+        this.causes = that.getCauses() == null ? null : List.copyOf(that.getCauses());
+        this.id = that.getId();
+    }
+
     public List<String> getCauses() {
-        return causes;
+        if (causes == null) {
+            return null;
+        }
+        return List.copyOf(causes);
     }
 
     public String getName() {
@@ -60,6 +77,10 @@ public class QueuedJobModel implements Serializable {
             this.causes = new ArrayList<>();
         }
         causes.add(shortDescription);
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {

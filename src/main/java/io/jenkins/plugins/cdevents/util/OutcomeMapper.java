@@ -6,9 +6,12 @@
 package io.jenkins.plugins.cdevents.util;
 
 import dev.cdevents.constants.CDEventConstants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.actions.ErrorAction;
 
+@SuppressFBWarnings(value = "DM_CONVERT_CASE",
+        justification = "Platform default encoding is OK for these values")
 public class OutcomeMapper {
 
     public static CDEventConstants.Outcome mapResultToOutcome(Result result) {

@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Queue;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -12,6 +13,7 @@ import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.sinks.HttpSink;
 import io.jenkins.plugins.cdevents.sinks.KinesisSink;
 import io.jenkins.plugins.cdevents.sinks.SyslogSink;
+import org.apache.commons.lang.NotImplementedException;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 
@@ -19,6 +21,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressFBWarnings(value = "DM_CONVERT_CASE",
+        justification = "Platform default encoding is OK for these values")
 public class EventHandler {
 
     private static final Logger LOGGER = Logger.getLogger("EventHandler");
@@ -96,10 +100,11 @@ public class EventHandler {
                     sink = new SyslogSink();
                     break;
                 default:
-                    LOGGER.log(Level.WARNING, "The following sink type " + sinkType + " is not supported");
-                    break;
+                    throw new NotImplementedException("The following sink type " + sinkType + " is not supported");
             }
+
             sink.sendCloudEvent(cloudEvent);
+
         } catch (Throwable error) {
             LOGGER.log(Level.WARNING,
                     "Failed when attempting to send to " + sinkType + " sink. Error: " + error.getMessage());
@@ -125,7 +130,7 @@ public class EventHandler {
             Run run = (Run<?, ?>) exec;
             cdEvent = taskRunEvent(eventState, run, node);
         } else {
-            LOGGER.warning("Unable to get Run object from FlowNode " + node.toString());
+            LOGGER.warning("Unable to get Run object from FlowNode " + node);
         }
 
         sendEvent(cdEvent);

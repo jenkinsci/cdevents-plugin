@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class BuildModel implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String fullUrl;
     private int number;
     private long queueId;
@@ -19,6 +21,22 @@ public class BuildModel implements Serializable {
     private String displayName;
     private Map<String, String> parameters;
     private ScmState scmState;
+
+    public BuildModel() {
+        super();
+    }
+
+    public BuildModel(BuildModel that) {
+        this.fullUrl = that.getFullUrl();
+        this.number = that.getNumber();
+        this.queueId = that.getQueueId();
+        this.duration = that.getDuration();
+        this.status = that.getStatus();
+        this.url = that.getUrl();
+        this.displayName = that.getDisplayName();
+        this.parameters = that.getParameters() == null ? null : Map.copyOf(that.getParameters());
+        this.scmState = that.getScmState() == null ? null : new ScmState(that.getScmState());
+    }
 
     public String getFullUrl() {
         return fullUrl;
@@ -83,18 +101,24 @@ public class BuildModel implements Serializable {
     }
 
     public Map<String, String> getParameters() {
-        return parameters;
+        if (parameters == null) {
+            return null;
+        }
+        return Map.copyOf(parameters);
     }
 
     public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
+        this.parameters = Map.copyOf(parameters);
     }
 
     public ScmState getScmState() {
-        return scmState;
+        if (scmState == null) {
+            return null;
+        }
+        return new ScmState(this.scmState);
     }
 
     public void setScmState(ScmState scmState) {
-        this.scmState = scmState;
+        this.scmState = new ScmState(scmState);
     }
 }

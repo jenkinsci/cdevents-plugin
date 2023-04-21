@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents.listeners;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.jenkins.plugins.cdevents.EventState;
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.reset;
 
+@SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+        justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 @ExtendWith(MockitoExtension.class)
 class CDJobListenerTest {
 

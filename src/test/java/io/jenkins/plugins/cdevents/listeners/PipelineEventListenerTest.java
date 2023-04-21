@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents.listeners;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepAtomNode;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepEndNode;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
@@ -18,6 +19,8 @@ import java.util.concurrent.CompletableFuture;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"},
+        justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 class PipelineEventListenerTest {
 
     // test that listener is triggered with StepStartNode
@@ -53,7 +56,7 @@ class PipelineEventListenerTest {
     }
 
     @Test
-    void testDoesNothingOnOtherNodes(){
+    void testDoesNothingOnOtherNodes() {
         try (MockedStatic<FutureRunner> mockFutureRunner = mockStatic(FutureRunner.class)) {
             ArgumentCaptor<FlowNode> argumentCaptor = ArgumentCaptor.forClass(FlowNode.class);
             StepAtomNode mockNode = mock(StepAtomNode.class);

@@ -9,6 +9,7 @@ import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder;
 import dev.cdevents.CDEventTypes;
 import dev.cdevents.constants.CDEventConstants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Plugin;
 import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.CDEventsGlobalConfig;
@@ -29,6 +30,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"},
+        justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 @ExtendWith(MockitoExtension.class)
 class KinesisSinkTest {
 

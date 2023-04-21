@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Queue;
 import io.cloudevents.CloudEvent;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
+@SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"},
+        justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 @ExtendWith(MockitoExtension.class)
 class EventHandlerTest {
 

@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+        justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 @ExtendWith(MockitoExtension.class)
 public class BuildJobModelTest {
 

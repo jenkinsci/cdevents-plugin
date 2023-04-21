@@ -9,9 +9,21 @@ import java.io.Serializable;
 
 public class ScmState implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String url;
     private String branch;
     private String commit;
+
+    public ScmState() {
+        super();
+    }
+
+    public ScmState(ScmState that) {
+        this.url = that.getUrl();
+        this.branch = that.getBranch();
+        this.commit = that.getCommit();
+    }
 
     public String getUrl() {
         return url;
