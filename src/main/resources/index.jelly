@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin allows Jenkins to be configured to send CD Events to a supported Sink location
+</div>

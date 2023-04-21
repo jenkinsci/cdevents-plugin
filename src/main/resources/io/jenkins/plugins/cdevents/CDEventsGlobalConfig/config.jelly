@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:section title="${%CD Events Plugin}">
+
+        <f:radioBlock title="Syslog" name="sinkType" inline="true" checked="${instance.sinkTypeEquals('syslog')}"
+                      value="syslog">
+
+        </f:radioBlock>
+
+        <f:radioBlock title="Kinesis" name="sinkType" inline="true" checked="${instance.sinkTypeEquals('kinesis')}"
+                      value="kinesis">
+            <f:entry field="kinesisStreamName" title="${%Stream Name}">
+                <f:textbox field="kinesisStreamName" value="${instance.kinesisStreamName}"/>
+            </f:entry>
+            <f:entry field="kinesisRegion" title="${%AWS Region}">
+                <f:textbox field="kinesisRegion" value="${instance.kinesisRegion}"/>
+            </f:entry>
+            <f:entry field="kinesisEndpoint" title="${%Endpoint}">
+                <f:textbox field="kinesisEndpoint" value="${instance.kinesisEndpoint}"/>
+            </f:entry>
+
+        </f:radioBlock>
+
+        <f:radioBlock title="HTTP" name="sinkType" inline="true" checked="${instance.sinkTypeEquals('http')}"
+                      value="http">
+            <f:entry field="httpSinkUrl" title="${%Sink URL}">
+                <f:textbox field="httpSinkUrl" value="${instance.httpSinkUrl}"/>
+            </f:entry>
+
+        </f:radioBlock>
+    </f:section>
+</j:jelly>
