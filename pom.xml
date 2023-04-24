@@ -11,7 +11,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>cdevents</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}.${changelist}</version>
     <packaging>hpi</packaging>
     <name>CDEvents</name>
     <description>The CDEvents Plugin for Jenkins allows interoperability between different CI/CD tools by adopting core
@@ -36,6 +36,8 @@
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or
         newer to run. -->
+        <revision>1</revision>
+        <changelist>999999-SNAPSHOT</changelist>
         <jenkins.version>2.375.4</jenkins.version>
         <hpi-plugin.version>3.42</hpi-plugin.version>
         <spotbugs.effort>Max</spotbugs.effort>
