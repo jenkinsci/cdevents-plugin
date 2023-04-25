@@ -11,7 +11,7 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>cdevents</artifactId>
-    <version>${revision}.${changelist}</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
     <name>CDEvents</name>
     <description>The CDEvents Plugin for Jenkins allows interoperability between different CI/CD tools by adopting core
@@ -27,17 +27,18 @@
     <scm child.scm.connection.inherit.append.path="false"
          child.scm.developerConnection.inherit.append.path="false"
          child.scm.url.inherit.append.path="false">
-        <connection>scm:git:https://github.com/jenkinsci/cdevents-plugin</connection>
-        <developerConnection>scm:git:https://github.com/jenkinsci/cdevents-plugin</developerConnection>
+        <connection>scm:git:https://github.com/${gitHubRepo}</connection>
+        <developerConnection>scm:git:https://github.com/${gitHubRepo}</developerConnection>
         <tag>${scmTag}</tag>
-        <url>https://github.com/jenkinsci/cdevents-plugin</url>
+        <url>https://github.com/${gitHubRepo}</url>
     </scm>
     <properties>
+        <revision>1.0</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <gitHubRepo>jenkinsci/cdevents-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or
         newer to run. -->
-        <revision>1</revision>
-        <changelist>999999-SNAPSHOT</changelist>
         <jenkins.version>2.375.4</jenkins.version>
         <hpi-plugin.version>3.42</hpi-plugin.version>
         <spotbugs.effort>Max</spotbugs.effort>
