@@ -41,7 +41,6 @@
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or
         newer to run. -->
         <jenkins.version>2.375.4</jenkins.version>
-        <hpi-plugin.version>3.42</hpi-plugin.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.threshold>Low</spotbugs.threshold>
     </properties>
