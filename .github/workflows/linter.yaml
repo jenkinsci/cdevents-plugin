@@ -1,9 +1,10 @@
+# Note: original source from https://github.com/cdevents/sdk-java/blob/main/.github/workflows/linter.yml
 ---
 name: Linter
 on:
   push:
     branches:
-      - fidelity-20230425-130646
+      - main
 jobs:
   build:
     name: Lint Code Base
@@ -18,6 +19,6 @@ jobs:
         env:
           FILTER_REGEX_INCLUDE: .*src/main/.*
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: fidelity-20230425-130646
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILTER_REGEX_EXCLUDE: .*mvnw
