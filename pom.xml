@@ -33,9 +33,10 @@
         <url>https://github.com/${gitHubRepo}</url>
     </scm>
     <properties>
-        <!-- revision: The version of cdevents sdk that this release is based upon -->
-        <revision>v0.1.0-draft6</revision>
+        <!-- revision: Maps Jenkins plugin release to the cdevents SDK version in use. See VERSIONING.MD -->
+        <revision>1</revision>
         <changelist>999999-SNAPSHOT</changelist>
+        <cdevents.version>v0.1.0-draft6</cdevents.version>
         <gitHubRepo>jenkinsci/cdevents-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or
@@ -87,7 +88,7 @@
         <dependency>
             <groupId>dev.cdevents.sdk-java</groupId>
             <artifactId>cdevents-sdk-java</artifactId>
-            <version>${revision}</version>
+            <version>${cdevents.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
