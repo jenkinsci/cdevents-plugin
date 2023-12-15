@@ -18,6 +18,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import hudson.ProxyConfiguration;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,8 +28,7 @@ public class HttpSink extends CDEventsSink {
 
     private static final Logger LOGGER = Logger.getLogger("HttpSink");
     private static final String sinkUrl = CDEventsGlobalConfig.get().getHttpSinkUrl();
-    private final String host = Jenkins.get().proxy.name;
-    private final int port = Jenkins.get().proxy.port;
+    private final ProxyConfiguration proxy = Jenkins.get().proxy;
 
     @Override
     public void sendCloudEvent(CloudEvent cloudEvent) throws IOException {
@@ -41,9 +42,10 @@ public class HttpSink extends CDEventsSink {
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
 
+        HttpHost httpProxy = (proxy != null ? new HttpHost(proxy.name, proxy.port) : null);
         try (CloseableHttpClient client = HttpClientBuilder.create()
                 .useSystemProperties()
-                .setProxy(new HttpHost(host, port))
+                .setProxy(httpProxy)
                 .build();
              CloseableHttpResponse response = client.execute(httpPost)) {
             JSONObject sinkResponse = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
