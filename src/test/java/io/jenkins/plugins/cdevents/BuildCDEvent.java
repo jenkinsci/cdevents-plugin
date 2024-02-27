@@ -1,5 +1,7 @@
 package io.jenkins.plugins.cdevents;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -54,12 +56,16 @@ class BuildCDEventTest {
             when(run.getParent().getFullDisplayName()).thenReturn("TestJob1");
             when(run.getParent().getUrl()).thenReturn("http://localhost/job/1");
             when(run.getUrl()).thenReturn("http://localhost/job/1/stage/1");
+            when(run.getId()).thenReturn("1");
 
             CloudEvent cloudEvent = BuildCDEvent.buildPipelineRunStartedModel(run, taskListener);
 
-            assertEquals(Set.of("specversion", "id", "source", "time", "type"), cloudEvent.getAttributeNames());
+            assertEquals(Set.of("datacontenttype", "specversion", "id", "source", "time", "type"), cloudEvent.getAttributeNames());
             assertEquals("dev.cdevents.pipelinerun.started.0.1.0", cloudEvent.getType());
-            assertEquals("TestJob1", cloudEvent.getExtension("pipelinename"));
+            // assert that the JSON string returned by cloudEvent.getData().toString() contains "pipelineName": "TestJob1" in its key-value pairs
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(cloudEvent.getData().toBytes());
+            assertEquals("TestJob1", jsonNode.get("subject").get("content").get("pipelineName").asText());
         }
     }
 }
