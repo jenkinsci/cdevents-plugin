@@ -5,6 +5,7 @@
 
 package io.jenkins.plugins.cdevents.sinks;
 
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder;
@@ -26,6 +27,7 @@ public class KinesisSink extends CDEventsSink {
     public volatile static String streamName;
     public volatile static String region;
     public volatile static String endpoint;
+    public volatile static String iamRole;
 
     public KinesisSink() {
         if (Jenkins.get().getPlugin("aws-java-sdk") == null
@@ -51,6 +53,8 @@ public class KinesisSink extends CDEventsSink {
             streamName = CDEventsGlobalConfig.get().getKinesisStreamName().trim();
             region = CDEventsGlobalConfig.get().getKinesisRegion();
             endpoint = CDEventsGlobalConfig.get().getKinesisEndpoint();
+            iamRole = CDEventsGlobalConfig.get().getIamRole();
+            String roleSessionName = "cdevents-plugin";
 
             AmazonKinesisClientBuilder kinesisBuilder = AmazonKinesisClientBuilder.standard();
             if (region != null && !region.isEmpty()) {
@@ -61,9 +65,14 @@ public class KinesisSink extends CDEventsSink {
                         endpoint, region);
                 kinesisBuilder.withEndpointConfiguration(endpointConfiguration);
             }
+            if (iamRole != null && !iamRole.isEmpty()) {
+                STSAssumeRoleSessionCredentialsProvider credentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
+                        iamRole, roleSessionName).build();
+                kinesisBuilder.withCredentials(credentialsProvider);
+            }
 
-            LOGGER.info(String.format("Instantiating new Kinesis client {stream=%s, region=%s, endpoint=%s}",
-                    streamName, region, endpoint));
+            LOGGER.info(String.format("Instantiating new Kinesis client {stream=%s, region=%s, endpoint=%s, iamRole=%s}",
+                    streamName, region, endpoint, iamRole));
             kinesis = kinesisBuilder.build();
         }
     }
