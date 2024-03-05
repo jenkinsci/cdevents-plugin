@@ -5,8 +5,6 @@
 
 package io.jenkins.plugins.cdevents;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cdevents.CDEvents;
 import dev.cdevents.constants.CDEventConstants;
 import dev.cdevents.events.*;
@@ -15,6 +13,9 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.cloudevents.CloudEvent;
+import io.jenkins.plugins.cdevents.models.JobModel;
+import io.jenkins.plugins.cdevents.models.QueuedJobModel;
+import io.jenkins.plugins.cdevents.models.StageModel;
 import io.jenkins.plugins.cdevents.util.ModelBuilder;
 import io.jenkins.plugins.cdevents.util.OutcomeMapper;
 import org.jenkinsci.plugins.workflow.actions.ErrorAction;
@@ -29,25 +30,11 @@ public class BuildCDEvent {
 
     private static final Logger LOGGER = Logger.getLogger("BuildCDEvent");
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    public static String convertToJson(Object object) {
-        String convertedJson = "";
-        try {
-            convertedJson = objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.WARNING,
-                    "Failed to convert the build object into JSON with the following error " + e.getMessage());
-            e.printStackTrace();
-        }
-        return convertedJson;
-    }
-
     public static CloudEvent buildPipelineRunStartedModel(Run run,
                                                           TaskListener listener) throws IOException,
             InterruptedException {
         String pipelineFullName = run.getParent().getFullDisplayName();
-        Object pipelineData = ModelBuilder.buildJobModel(run.getParent(), run, listener);
+        JobModel pipelineData = ModelBuilder.buildJobModel(run.getParent(), run, listener);
         LOGGER.log(Level.INFO, "Building PipelineRunStarted model for " + pipelineFullName);
 
         PipelineRunStartedCDEvent event = new PipelineRunStartedCDEvent();
@@ -59,7 +46,7 @@ public class BuildCDEvent {
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
         event.setSubjectUrl(URI.create(run.getUrl()));
-        event.setCustomData(convertToJson(pipelineData));
+        event.setCustomData(pipelineData);
         event.setCustomDataContentType("application/json");
 
         return CDEvents.cdEventAsCloudEvent(event);
@@ -69,7 +56,7 @@ public class BuildCDEvent {
                                                            TaskListener listener) throws IOException,
             InterruptedException {
         String pipelineFullName = run.getParent().getFullDisplayName();
-        Object pipelineData = ModelBuilder.buildJobModel(run.getParent(), run, listener);
+        JobModel pipelineData = ModelBuilder.buildJobModel(run.getParent(), run, listener);
         LOGGER.log(Level.INFO, "Building PipelineRunFinished model for " + pipelineFullName);
 
         String errors;
@@ -92,7 +79,7 @@ public class BuildCDEvent {
         event.setSubjectId(run.getId());
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
-        event.setCustomData(convertToJson(pipelineData));
+        event.setCustomData(pipelineData);
         event.setCustomDataContentType("application/json");
         event.setSubjectOutcome(outcome);
         event.setSubjectErrors(errors);
@@ -102,7 +89,7 @@ public class BuildCDEvent {
 
     public static CloudEvent buildPipelineRunQueuedModel(Queue.WaitingItem item) {
         String pipelineFullName = item.task.getFullDisplayName();
-        Object pipelineData = ModelBuilder.buildQueuedJobModel(item);
+        QueuedJobModel pipelineData = ModelBuilder.buildQueuedJobModel(item);
         LOGGER.log(Level.INFO, "Building PipelineRunQueued model for " + pipelineFullName);
 
         PipelineRunQueuedCDEvent event = new PipelineRunQueuedCDEvent();
@@ -110,7 +97,7 @@ public class BuildCDEvent {
         event.setSubjectId(String.valueOf(item.getId()));
         event.setSource(URI.create(item.task.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
-        event.setCustomData(convertToJson(pipelineData));
+        event.setCustomData(pipelineData);
         event.setCustomDataContentType("application/json");
 
         return CDEvents.cdEventAsCloudEvent(event);
@@ -118,7 +105,7 @@ public class BuildCDEvent {
 
     public static CloudEvent buildTaskRunStartedModel(Run run, FlowNode node) {
         String displayName = run.getParent().getFullDisplayName();
-        Object taskRunData = ModelBuilder.buildTaskModel(run, node);
+        StageModel taskRunData = ModelBuilder.buildTaskModel(run, node);
         LOGGER.info("Building TaskRunStarted model for " + displayName);
 
         TaskRunStartedCDEvent event = new TaskRunStartedCDEvent();
@@ -129,7 +116,7 @@ public class BuildCDEvent {
         event.setSubjectTaskName(displayName);
         event.setSubjectPipelineRunId(run.getId());
         event.setSubjectPipelineRunSource(URI.create(run.getUrl()));
-        event.setCustomData(convertToJson(taskRunData));
+        event.setCustomData(taskRunData);
         event.setCustomDataContentType("application/json");
 
         return CDEvents.cdEventAsCloudEvent(event);
@@ -137,7 +124,7 @@ public class BuildCDEvent {
 
     public static CloudEvent buildTaskRunFinishedModel(Run run, FlowNode node) {
         String displayName = run.getParent().getFullDisplayName();
-        Object taskRunData = ModelBuilder.buildTaskModel(run, node);
+        StageModel taskRunData = ModelBuilder.buildTaskModel(run, node);
 
         String errors;
         CDEventConstants.Outcome outcome;
@@ -159,7 +146,7 @@ public class BuildCDEvent {
         event.setSubjectTaskName(displayName);
         event.setSubjectPipelineRunId(run.getId());
         event.setSubjectPipelineRunSource(URI.create(run.getUrl()));
-        event.setCustomData(convertToJson(taskRunData));
+        event.setCustomData(taskRunData);
         event.setCustomDataContentType("application/json");
 
         event.setSubjectOutcome(outcome);
