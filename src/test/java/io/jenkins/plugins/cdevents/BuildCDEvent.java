@@ -54,7 +54,6 @@ class BuildCDEventTest {
         try (MockedStatic<ModelBuilder> modelBuilder = getMockedModelBuilder()) {
             modelBuilder.when(() -> ModelBuilder.buildJobModel(job, run, taskListener)).thenReturn(new JobModel());
             when(run.getParent().getFullDisplayName()).thenReturn("TestJob1");
-            when(run.getParent().getUrl()).thenReturn("http://localhost/job/1");
             when(run.getUrl()).thenReturn("http://localhost/job/1/stage/1");
             when(run.getId()).thenReturn("1");
 
