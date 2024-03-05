@@ -38,10 +38,6 @@ public class BuildCDEvent {
         LOGGER.log(Level.INFO, "Building PipelineRunStarted model for " + pipelineFullName);
 
         PipelineRunStartedCDEvent event = new PipelineRunStartedCDEvent();
-        event.setSubjectSource(URI.create(run.getParent()
-                .getUrl()
-                .replaceAll(pipelineFullName, "")
-                .replaceAll("//", "/")));
         event.setSubjectId(run.getId());
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
@@ -72,10 +68,6 @@ public class BuildCDEvent {
 
         PipelineRunFinishedCDEvent event = new PipelineRunFinishedCDEvent();
 
-        event.setSubjectSource(URI.create(run.getParent()
-                .getUrl()
-                .replaceAll(pipelineFullName, "")
-                .replaceAll("//", "/")));
         event.setSubjectId(run.getId());
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
@@ -93,7 +85,6 @@ public class BuildCDEvent {
         LOGGER.log(Level.INFO, "Building PipelineRunQueued model for " + pipelineFullName);
 
         PipelineRunQueuedCDEvent event = new PipelineRunQueuedCDEvent();
-        event.setSubjectSource(URI.create(item.task.getUrl()));
         event.setSubjectId(String.valueOf(item.getId()));
         event.setSource(URI.create(item.task.getUrl()));
         event.setSubjectPipelineName(pipelineFullName);
@@ -110,7 +101,6 @@ public class BuildCDEvent {
 
         TaskRunStartedCDEvent event = new TaskRunStartedCDEvent();
 
-        event.setSubjectSource(URI.create(run.getParent().getUrl().replaceAll(displayName, "").replaceAll("//", "/")));
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectId(run.getId());
         event.setSubjectTaskName(displayName);
@@ -140,7 +130,6 @@ public class BuildCDEvent {
         LOGGER.info("Building TaskRunFinished model for " + displayName);
 
         TaskRunFinishedCDEvent event = new TaskRunFinishedCDEvent();
-        event.setSubjectSource(URI.create(run.getParent().getUrl().replaceAll(displayName, "").replaceAll("//", "/")));
         event.setSource(URI.create(run.getUrl()));
         event.setSubjectId(run.getId());
         event.setSubjectTaskName(displayName);
