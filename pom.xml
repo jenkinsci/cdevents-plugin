@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.61</version>
+        <version>4.78</version>
         <relativePath/>
     </parent>
     <groupId>io.jenkins.plugins</groupId>
@@ -36,12 +36,12 @@
         <!-- revision: Maps Jenkins plugin release to the cdevents SDK version in use. See VERSIONING.MD -->
         <revision>1</revision>
         <changelist>999999-SNAPSHOT</changelist>
-        <cdevents.version>v0.1.0-draft6</cdevents.version>
+        <cdevents.version>0.1.2</cdevents.version>
         <gitHubRepo>jenkinsci/cdevents-plugin</gitHubRepo>
         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
         <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or
         newer to run. -->
-        <jenkins.version>2.375.4</jenkins.version>
+        <jenkins.version>2.401.3</jenkins.version>
         <spotbugs.effort>Max</spotbugs.effort>
         <spotbugs.threshold>Low</spotbugs.threshold>
     </properties>
@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-2.401.x</artifactId>
-                <version>2143.ve4c3c9ec790a</version>
+                <version>2745.vc7b_fe4c876fa_</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -81,12 +81,12 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins.aws-java-sdk</groupId>
             <artifactId>aws-java-sdk-kinesis</artifactId>
-            <version>1.12.447-382.vda_68e2007233</version>
+            <version>1.12.633-430.vf9a_e567a_244f</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>dev.cdevents.sdk-java</groupId>
+            <groupId>dev.cdevents</groupId>
             <artifactId>cdevents-sdk-java</artifactId>
             <version>${cdevents.version}</version>
             <exclusions>
