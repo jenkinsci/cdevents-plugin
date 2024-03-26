@@ -20,6 +20,8 @@ Early adopters and testers are welcome to try out the plugin and provide feedbac
    ```shell
    mvn clean hpi:run
    ```
+   
+You may need to add `-Dhost=0.0.0.0` to the command if you are running Jenkins in a container or virtual machine.
 
 3. To access your local instance, open a browser to http://localhost:8080/jenkins
 

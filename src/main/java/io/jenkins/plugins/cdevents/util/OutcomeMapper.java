@@ -18,20 +18,20 @@ public class OutcomeMapper {
         switch (result.toString().toUpperCase()) {
             case "SUCCESS":
             case "UNSTABLE":
-                return CDEventConstants.Outcome.OutcomeSuccess;
+                return CDEventConstants.Outcome.SUCCESS;
             case "NOT_BUILT":
             case "ABORTED":
-                return CDEventConstants.Outcome.OutcomeFailure;
+                return CDEventConstants.Outcome.FAILURE;
             default: // Jenkins status FAILURE and all others
-                return CDEventConstants.Outcome.OutcomeError;
+                return CDEventConstants.Outcome.ERROR;
         }
     }
 
     public static CDEventConstants.Outcome mapResultToOutcome(ErrorAction error) {
         if (error != null) {
-            return CDEventConstants.Outcome.OutcomeError;
+            return CDEventConstants.Outcome.ERROR;
         } else {
-            return CDEventConstants.Outcome.OutcomeSuccess;
+            return CDEventConstants.Outcome.SUCCESS;
         }
     }
 }
