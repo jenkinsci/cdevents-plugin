@@ -125,9 +125,9 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
         return FormValidation.ok();
     }
 
-    public FormValidation doCheckKinesisEndpoint(@QueryParameter("kinesisEndpoint") String kinesisEndpoint, @QueryParameter("kinesisRegion") String kinesisRegion) {
+    public FormValidation doCheckKinesisEndpoint(@QueryParameter("kinesisEndpoint") String kinesisEndpoint, @QueryParameter("kinesisRegion") String kinesisRegion) throws FormValidation {
         if (!isNullOrEmpty(kinesisEndpoint) && isNullOrEmpty(kinesisRegion)) {
-            FormValidation.error("Kinesis requires a defined region for a custom endpoint");
+            throw FormValidation.error("Kinesis requires a defined region for a custom endpoint");
         }
         return FormValidation.ok();
     }

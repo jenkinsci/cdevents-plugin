@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 public class KinesisSink extends CDEventsSink {
 
     public static final Logger LOGGER = Logger.getLogger(KinesisSink.class.getName());
-    public volatile static AmazonKinesis kinesis;
-    public volatile static String streamName;
-    public volatile static String region;
-    public volatile static String endpoint;
-    public volatile static String iamRole;
+    private volatile static AmazonKinesis kinesis;
+    private volatile static String streamName;
+    private volatile static String region;
+    private volatile static String endpoint;
+    private volatile static String iamRole;
 
     public KinesisSink() {
         if (Jenkins.get().getPlugin("aws-java-sdk") == null
