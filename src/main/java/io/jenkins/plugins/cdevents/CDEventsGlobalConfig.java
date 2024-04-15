@@ -25,6 +25,7 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
     private String kinesisStreamName;
     private String kinesisRegion;
     private String kinesisEndpoint;
+    private String iamRole;
 
     @SuppressFBWarnings(value = {"CD_CIRCULAR_DEPENDENCY", "MC_OVERRIDABLE_METHOD_CALL_IN_CONSTRUCTOR"}, justification = "Circular dependency is false positive triggered by jenkins.model.GlobalConfiguration. " + "Overridable method call in constructor is unavoidable.")
     public CDEventsGlobalConfig() {
@@ -99,6 +100,17 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
         save();
     }
 
+    public String getIamRole() {
+        return this.iamRole;
+    }
+
+    @DataBoundSetter
+    public void setIamRole(String iamRole) {
+        this.iamRole = iamRole;
+        KinesisSink.nullifyKinesisClient();
+        save();
+    }
+
     public FormValidation doCheckKinesisStreamName(@QueryParameter("kinesisStreamName") String kinesisStreamName) {
         if (isNullOrEmpty(kinesisStreamName)) {
             return FormValidation.error("Kinesis stream cannot be blank");
@@ -116,6 +128,13 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
     public FormValidation doCheckKinesisEndpoint(@QueryParameter("kinesisEndpoint") String kinesisEndpoint, @QueryParameter("kinesisRegion") String kinesisRegion) throws FormValidation {
         if (!isNullOrEmpty(kinesisEndpoint) && isNullOrEmpty(kinesisRegion)) {
             throw FormValidation.error("Kinesis requires a defined region for a custom endpoint");
+        }
+        return FormValidation.ok();
+    }
+
+    public FormValidation doCheckIamRole(@QueryParameter("iamRole") String iamRole) {
+        if (isNullOrEmpty(iamRole)) {
+            return FormValidation.error("IAM Role cannot be blank");
         }
         return FormValidation.ok();
     }

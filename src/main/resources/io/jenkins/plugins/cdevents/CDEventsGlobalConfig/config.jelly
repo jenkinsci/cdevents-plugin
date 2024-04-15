@@ -19,6 +19,9 @@
             <f:entry field="kinesisEndpoint" title="${%Endpoint}">
                 <f:textbox field="kinesisEndpoint" value="${instance.kinesisEndpoint}"/>
             </f:entry>
+            <f:entry field="iamRole" title="${%IamRole}">
+                <f:textbox field="iamRole" value="${instance.iamRole}"/>
+            </f:entry>
 
         </f:radioBlock>
 
