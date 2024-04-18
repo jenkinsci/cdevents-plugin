@@ -137,4 +137,16 @@ class KinesisSinkTest {
         }
     }
 
+    @Test
+    void constructorFailsEmptyStreamName() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic()){
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getKinesisStreamName()).thenReturn("");
+
+            assertThrows(NullPointerException.class, () -> new KinesisSink());
+        }
+    }
 }
