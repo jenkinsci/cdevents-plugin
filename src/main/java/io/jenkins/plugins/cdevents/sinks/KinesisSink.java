@@ -37,7 +37,7 @@ public class KinesisSink extends CDEventsSink {
         }
 
         if (CDEventsGlobalConfig.get().getKinesisStreamName() == null
-                && CDEventsGlobalConfig.get().getKinesisStreamName().trim().isEmpty()) {
+                || CDEventsGlobalConfig.get().getKinesisStreamName().trim().isEmpty()) {
             throw new NullPointerException("Kinesis stream name cannot be blank");
         }
 
