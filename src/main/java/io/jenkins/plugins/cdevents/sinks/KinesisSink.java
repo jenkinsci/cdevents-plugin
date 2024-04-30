@@ -50,7 +50,7 @@ public class KinesisSink extends CDEventsSink {
 
     public static synchronized void rebuildKinesisClient() {
         if (kinesis == null) {
-            streamName = streamName.trim();
+            streamName = CDEventsGlobalConfig.get().getKinesisStreamName().trim();
             region = CDEventsGlobalConfig.get().getKinesisRegion();
             endpoint = CDEventsGlobalConfig.get().getKinesisEndpoint();
             iamRole = CDEventsGlobalConfig.get().getIamRole();
