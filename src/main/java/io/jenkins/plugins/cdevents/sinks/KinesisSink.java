@@ -36,8 +36,8 @@ public class KinesisSink extends CDEventsSink {
                     "Jenkins plugin aws-java-sdk or aws-java-sdk-kinesis must be installed to use Kinesis sink");
         }
 
-        if (CDEventsGlobalConfig.get().getKinesisStreamName() == null
-                || CDEventsGlobalConfig.get().getKinesisStreamName().trim().isEmpty()) {
+        streamName = CDEventsGlobalConfig.get().getKinesisStreamName();
+        if (streamName == null || streamName.trim().isEmpty()) {
             throw new NullPointerException("Kinesis stream name cannot be blank");
         }
 
