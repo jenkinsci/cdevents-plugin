@@ -58,15 +58,15 @@ public class KinesisSink extends CDEventsSink {
             String roleSessionName = "cdevents-plugin";
 
             AmazonKinesisClientBuilder kinesisBuilder = AmazonKinesisClientBuilder.standard();
-            if (StringUtils.isBlank(region)) {
+            if (!StringUtils.isBlank(region)) {
                 kinesisBuilder.withRegion(region);
             }
-            if (StringUtils.isBlank(region)) {
+            if (!StringUtils.isBlank(region)) {
                 AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
                         endpoint, region);
                 kinesisBuilder.withEndpointConfiguration(endpointConfiguration);
             }
-            if (StringUtils.isBlank(iamRole)) {
+            if (!StringUtils.isBlank(iamRole)) {
                 STSAssumeRoleSessionCredentialsProvider credentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
                         iamRole, roleSessionName).build();
                 kinesisBuilder.withCredentials(credentialsProvider);
