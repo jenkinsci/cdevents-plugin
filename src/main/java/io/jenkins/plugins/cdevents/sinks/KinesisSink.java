@@ -16,6 +16,7 @@ import io.cloudevents.jackson.JsonFormat;
 import io.jenkins.plugins.cdevents.CDEventsGlobalConfig;
 import io.jenkins.plugins.cdevents.CDEventsSink;
 import jenkins.model.Jenkins;
+import org.apache.commons.lang.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
@@ -37,7 +38,7 @@ public class KinesisSink extends CDEventsSink {
         }
 
         streamName = CDEventsGlobalConfig.get().getKinesisStreamName();
-        if (streamName == null || streamName.trim().isEmpty()) {
+        if (StringUtils.isBlank(streamName)) {
             throw new NullPointerException("Kinesis stream name cannot be blank");
         }
 
@@ -57,15 +58,15 @@ public class KinesisSink extends CDEventsSink {
             String roleSessionName = "cdevents-plugin";
 
             AmazonKinesisClientBuilder kinesisBuilder = AmazonKinesisClientBuilder.standard();
-            if (region != null && !region.isEmpty()) {
+            if (StringUtils.isBlank(region)) {
                 kinesisBuilder.withRegion(region);
             }
-            if (endpoint != null && !endpoint.isEmpty()) {
+            if (StringUtils.isBlank(region)) {
                 AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
                         endpoint, region);
                 kinesisBuilder.withEndpointConfiguration(endpointConfiguration);
             }
-            if (iamRole != null && !iamRole.isEmpty()) {
+            if (StringUtils.isBlank(iamRole)) {
                 STSAssumeRoleSessionCredentialsProvider credentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
                         iamRole, roleSessionName).build();
                 kinesisBuilder.withCredentials(credentialsProvider);
