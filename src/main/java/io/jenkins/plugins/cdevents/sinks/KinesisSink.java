@@ -21,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
-public class KinesisSink extends CDEventsSink {
+public  final class KinesisSink extends CDEventsSink {
 
     public static final Logger LOGGER = Logger.getLogger(KinesisSink.class.getName());
     private volatile static AmazonKinesis kinesis;
