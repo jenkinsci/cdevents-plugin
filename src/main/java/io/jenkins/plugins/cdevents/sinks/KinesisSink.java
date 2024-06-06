@@ -17,13 +17,14 @@ import io.jenkins.plugins.cdevents.CDEventsGlobalConfig;
 import io.jenkins.plugins.cdevents.CDEventsSink;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
 
 public class KinesisSink extends CDEventsSink {
 
-    public static final Logger LOGGER = Logger.getLogger(KinesisSink.class.getName());
+    public static final Logger LOGGER = LoggerFactory.getLogger(KinesisSink.class);
     private volatile static AmazonKinesis kinesis;
     private volatile static String streamName;
     private volatile static String region;
@@ -72,8 +73,8 @@ public class KinesisSink extends CDEventsSink {
                 kinesisBuilder.withCredentials(credentialsProvider);
             }
 
-            LOGGER.info(String.format("Instantiating new Kinesis client {stream=%s, region=%s, endpoint=%s, iamRole=%s}",
-                    streamName, region, endpoint, iamRole));
+            LOGGER.info("Instantiating new Kinesis client {stream={}, region={}, endpoint={}, iamRole={}",
+                    streamName, region, endpoint, iamRole);
             kinesis = kinesisBuilder.build();
         }
     }
@@ -89,6 +90,6 @@ public class KinesisSink extends CDEventsSink {
         putRecordRequest.setPartitionKey(cloudEvent.getType());
 
         PutRecordResult result = kinesis.putRecord(putRecordRequest);
-        LOGGER.info("Kinesis putRecord result: " + result.toString());
+        LOGGER.info("Kinesis putRecord result: {}",result);
     }
 }
