@@ -37,7 +37,7 @@ public class CDEventsGlobalConfig extends GlobalConfiguration {
     }
 
     private static boolean isNullOrEmpty(String str) {
-        return str == null || str.trim().isEmpty();
+        return str.isBlank();
     }
 
     public String getSinkType() {
