@@ -18,15 +18,88 @@ adapters.
 
 ## Installing and configuring the plugin
 
-1. Install the CDEvents Plugin by going to **Manage Jenkins | Manage Plugins**.
-   ![Plugin Installation](images/plugin-install.png)
+1. In root of the project run the command "mvn compile hpi:run" in your terminal.
+   ![Plugin Installation](./images/plugin_installation/Step1.png)
+
+2. Open your browser and navigate to http://localhost:8080/jenkins.
+   ![Plugin Installation](images/plugin_installation/Step2.png)
+
+3. Go to "Manage Jenkins".
+
+4. Click on "Plugins".
+
+5. Click on "Advanced Settings".
+
+6. Set the field 'Server' to the appropriate proxy. Ex. "http.proxy.myproxy.com".
+
+7. Set the field 'Port' to "8000".
+   ![Plugin Installation](images/plugin_installation/Step7.png)
+
+8. Select the 'Advanced' drop down setting in the 'HTTP Proxy Configuration' section.
+
+9. Set the field 'Test URL' to "http://www.google.com".
+   ![Plugin Installation](images/plugin_installation/Step9.png)
+
+10. Select 'Validate Proxy'.
+
+11. Select 'Submit'.
+
+12. In the left hand selection pane select 'Available plugins'.
+
+13. Wait for your console to display that a connection has been made. It should display a message stating something like "Performed the action check updates server successfully at the attempt #1". You may have to wait and refresh your browser page multiple times.
+   ![Plugin Installation](images/plugin_installation/Step13.png)
+
+14. Return to the 'Available plugins' page and look for "pipeline" in the search bar.
+
+15. Check the 'install' box for the first returned response. The descriptions should say something like "A suite of plugins that lets you orchestrate automation, simple or complex..."
+   ![Plugin Installation](images/plugin_installation/Step15.png)
+
+16. Select 'Download now and install after restart'.
+
+17. Wait for the download to complete. All steps should report 'Downloaded Successfully'.
+   ![Plugin Installation](images/plugin_installation/Step17.png)
+
+18. In your terminal restart your instance (ctrl+C).
+
+19. Rerun the command "mvn compile hpi:run".
+
+20. Return to Jenkins in your browser and select 'Dashboard' in the path listed at the top pane of the Jenkins window.
+
+21. In the left hand selection pane select 'New Item'.
+
+22. Give the item a name. Ex. "myFirstPipeline".
+
+23. Select the 'Pipeline' option below- the search box.
+
+24. Select 'OK'.
+   ![Plugin Installation](images/plugin_installation/Step24.png)
+
+25. Scroll to the bottom of the page so that you are in the Pipeline section of the page.
+
+26. In the dropdown option on the right hand side of the 'Script' pane under 'Pipeline' select 'Hello World'.
+   ![Plugin Installation](images/plugin_installation/Step26.png)
+
+27. Select 'Save'.
+
+28. Select 'Dashboard' in the path listed at the top pane of the Jenkins window.
+
+29. In the left hand pane of the window select 'Manage Jenkins'.
+
+30. Select 'System'.
+
+31. Look for the 'CD Events Plugin' section of the page and select 'Syslog'.
+   ![Plugin Installation](images/plugin_installation/Step31.png)
+
+32. Select 'Save'.
+
+33. In the left hand pane of the window select 'Build Now'.
+
+34. Your pipeline should build successfully.
+   ![Plugin Installation](images/plugin_installation/Step34.png)
 
    > **Note**  
    > For more information on installing plugins,
    see [Installing a plugin](https://www.jenkins.io/doc/book/managing/plugins/#installing-a-plugin)
-
-2. Configure your CDEvents Sink Types **Manage Jenkins | Configure System**.  
-   ![Plugin Configuration](images/plugin-config-main.png)
 
 ### CDEvents Sink Types
 
