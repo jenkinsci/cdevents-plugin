@@ -5,6 +5,8 @@
 
 package io.jenkins.plugins.cdevents.sinks;
 
+import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder;
 import dev.cdevents.CDEvents;
@@ -147,6 +149,91 @@ class KinesisSinkTest {
             when(mockGlobalConfig.getKinesisStreamName()).thenReturn("");
 
             assertThrows(NullPointerException.class, () -> new KinesisSink());
+        }
+    }
+
+    @Test
+    void kinesisClientBuiltWithoutIamRole() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+            configureMockClientBuilderStatic(mockClientBuilderStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getIamRole()).thenReturn("");
+
+            KinesisSink sink = new KinesisSink();
+            assertDoesNotThrow(() -> sink.sendCloudEvent(cloudEvent));
+
+            verify(mockClientBuilder, never()).withCredentials(any(STSAssumeRoleSessionCredentialsProvider.class));
+        }
+    }
+
+    @Test
+    void kinesisClientBuiltWithRegion() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+            configureMockClientBuilderStatic(mockClientBuilderStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getKinesisRegion()).thenReturn("us-west-2");
+
+            KinesisSink sink = new KinesisSink();
+            assertDoesNotThrow(() -> sink.sendCloudEvent(cloudEvent));
+
+            verify(mockClientBuilder).withRegion("us-west-2");
+        }
+    }
+
+    @Test
+    void kinesisClientBuiltWithoutRegion() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+            configureMockClientBuilderStatic(mockClientBuilderStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getKinesisRegion()).thenReturn("");
+
+            KinesisSink sink = new KinesisSink();
+            assertDoesNotThrow(() -> sink.sendCloudEvent(cloudEvent));
+
+            verify(mockClientBuilder, never()).withRegion(anyString());
+        }
+    }
+
+    @Test
+    void kinesisClientBuiltWithEndpoint() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+            configureMockClientBuilderStatic(mockClientBuilderStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getKinesisEndpoint()).thenReturn("http://localhost:4566");
+
+            KinesisSink sink = new KinesisSink();
+            assertDoesNotThrow(() -> sink.sendCloudEvent(cloudEvent));
+
+            verify(mockClientBuilder).withEndpointConfiguration(any(AwsClientBuilder.EndpointConfiguration.class));
+        }
+    }
+
+    @Test
+    void kinesisClientBuiltWithoutEndpoint() {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+            configureMockJenkinsStatic(mockJenkinsStatic);
+            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
+            configureMockClientBuilderStatic(mockClientBuilderStatic);
+
+            reset(mockGlobalConfig);
+            when(mockGlobalConfig.getKinesisEndpoint()).thenReturn("");
+
+            KinesisSink sink = new KinesisSink();
+            assertDoesNotThrow(() -> sink.sendCloudEvent(cloudEvent));
+
+            verify(mockClientBuilder, never()).withEndpointConfiguration(any(AwsClientBuilder.EndpointConfiguration.class));
         }
     }
 }
