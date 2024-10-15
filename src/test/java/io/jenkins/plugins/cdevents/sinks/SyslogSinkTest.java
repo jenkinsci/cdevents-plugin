@@ -2,19 +2,17 @@
  * Copyright FMR LLC <opensource@fidelity.com>
  * SPDX-License-Identifier: Apache-2.0
  */
-
 package io.jenkins.plugins.cdevents.sinks;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import dev.cdevents.CDEvents;
 import dev.cdevents.events.PipelineRunStartedCDEvent;
 import io.cloudevents.CloudEvent;
+import java.net.URI;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
-class SyslogSinkTest {
+public class SyslogSinkTest {
 
     @Test
     void sendCloudEvent_works() {
@@ -34,8 +32,11 @@ class SyslogSinkTest {
         event.setSubjectPipelineName("unittest");
 
         event.setCustomDataContentType("application/json");
-        event.setCustomData("{\"userId\":null,\"userName\":null,\"name\":\"PipelineTest\",\"displayName\":" +
-                "\"PipelineTest\",\"url\":\"job/PipelineTest/\",\"build\":{\"fullUrl\":\"http://local" + "host:8080" + "/jenkins/job/PipelineTest/16/\",\"number\":16,\"queueId\":8,\"duration\":0," + "\"status\":null," + "\"url\":\"job/PipelineTest/16/\",\"displayName\":null,\"parameters\"" + ":null,\"scmState\":{\"url" + "\":null,\"branch\":null,\"commit\":null}}}");
+        event.setCustomData("{\"userId\":null,\"userName\":null,\"name\":\"PipelineTest\",\"displayName\":"
+                + "\"PipelineTest\",\"url\":\"job/PipelineTest/\",\"build\":{\"fullUrl\":\"http://local" + "host:8080"
+                + "/jenkins/job/PipelineTest/16/\",\"number\":16,\"queueId\":8,\"duration\":0," + "\"status\":null,"
+                + "\"url\":\"job/PipelineTest/16/\",\"displayName\":null,\"parameters\"" + ":null,\"scmState\":{\"url"
+                + "\":null,\"branch\":null,\"commit\":null}}}");
 
         /* Create a CloudEvent from a PipelineRunStartedCDEvent */
         CloudEvent cloudEvent = CDEvents.cdEventAsCloudEvent(event);

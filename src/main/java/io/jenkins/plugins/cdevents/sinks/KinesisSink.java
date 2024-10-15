@@ -18,6 +18,7 @@ import io.jenkins.plugins.cdevents.CDEventsSink;
 import jenkins.model.Jenkins;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class KinesisSink extends CDEventsSink {
@@ -57,19 +58,23 @@ public class KinesisSink extends CDEventsSink {
             String roleSessionName = "cdevents-plugin";
 
             AmazonKinesisClientBuilder kinesisBuilder = AmazonKinesisClientBuilder.standard();
-            if (!region.isBlank()) {
-                kinesisBuilder.withRegion(region);
-            }
-            if (!endpoint.isBlank()) {
-                AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
-                        endpoint, region);
-                kinesisBuilder.withEndpointConfiguration(endpointConfiguration);
-            }
-            if (!iamRole.isBlank()) {
-                STSAssumeRoleSessionCredentialsProvider credentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
-                        iamRole, roleSessionName).build();
-                kinesisBuilder.withCredentials(credentialsProvider);
-            }
+            Optional.ofNullable(region)
+                    .filter(r -> !r.isBlank())
+                    .ifPresent(kinesisBuilder::withRegion);
+            Optional.ofNullable(endpoint)
+                    .filter(e -> !e.isBlank())
+                    .ifPresent(e -> {
+                        AwsClientBuilder.EndpointConfiguration endpointConfiguration = new AwsClientBuilder.EndpointConfiguration(
+                                e, region);
+                        kinesisBuilder.withEndpointConfiguration(endpointConfiguration);
+                    });
+            Optional.ofNullable(iamRole)
+                    .filter(role -> !role.isBlank())
+                    .ifPresent(role -> {
+                        STSAssumeRoleSessionCredentialsProvider credentialsProvider = new STSAssumeRoleSessionCredentialsProvider.Builder(
+                                role, roleSessionName).build();
+                        kinesisBuilder.withCredentials(credentialsProvider);
+                    });
 
             LOGGER.info(String.format("Instantiating new Kinesis client {stream=%s, region=%s, endpoint=%s, iamRole=%s}",
                     streamName, region, endpoint, iamRole));

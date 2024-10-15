@@ -9,10 +9,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.Queue;
 import hudson.model.queue.QueueListener;
+import io.jenkins.plugins.cdevents.EventHandler;
 import io.jenkins.plugins.cdevents.EventState;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /*
  * Note to self: https://javadoc.jenkins.io/hudson/model/queue/QueueListener.html
@@ -26,8 +24,6 @@ import java.util.concurrent.ExecutionException;
 @Extension
 public class CDQueueListener extends QueueListener {
 
-    private static final boolean RUN_ASYNC = true;
-
     public CDQueueListener() {
         super();
     }
@@ -35,14 +31,6 @@ public class CDQueueListener extends QueueListener {
     @Override
     @SuppressFBWarnings
     public void onEnterWaiting(Queue.WaitingItem wi) {
-        CompletableFuture future = FutureRunner.captureEvent(EventState.QUEUED, wi, "enterWaiting");
-
-        if (!RUN_ASYNC) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        EventHandler.captureEvent(EventState.QUEUED, wi, "enterWaiting");
     }
 }

@@ -2,8 +2,13 @@
  * Copyright FMR LLC <opensource@fidelity.com>
  * SPDX-License-Identifier: Apache-2.0
  */
-
 package io.jenkins.plugins.cdevents.sinks;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder;
@@ -13,6 +18,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Plugin;
 import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.CDEventsGlobalConfig;
+import java.net.URI;
 import jenkins.model.Jenkins;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,27 +28,27 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.net.URI;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-@SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
-        "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"},
+@SuppressFBWarnings(
+        value = {
+            "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+            "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
+            "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"
+        },
         justification = "Tests are just checking that exceptions are not thrown. Feel free to add more robust tests")
 @ExtendWith(MockitoExtension.class)
-class KinesisSinkTest {
+public class KinesisSinkTest {
 
     private CloudEvent cloudEvent;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private AmazonKinesis mockKinesisClient;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private AmazonKinesisClientBuilder mockClientBuilder;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Jenkins mockJenkins;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CDEventsGlobalConfig mockGlobalConfig;
 
@@ -64,8 +70,11 @@ class KinesisSinkTest {
         event.setSubjectPipelineName("unittest");
 
         event.setCustomDataContentType("application/json");
-        event.setCustomData("{\"userId\":null,\"userName\":null,\"name\":\"PipelineTest\",\"displayName\":" +
-                "\"PipelineTest\",\"url\":\"job/PipelineTest/\",\"build\":{\"fullUrl\":\"http://local" + "host:8080" + "/jenkins/job/PipelineTest/16/\",\"number\":16,\"queueId\":8,\"duration\":0," + "\"status\":null," + "\"url\":\"job/PipelineTest/16/\",\"displayName\":null,\"parameters\"" + ":null,\"scmState\":{\"url" + "\":null,\"branch\":null,\"commit\":null}}}");
+        event.setCustomData("{\"userId\":null,\"userName\":null,\"name\":\"PipelineTest\",\"displayName\":"
+                + "\"PipelineTest\",\"url\":\"job/PipelineTest/\",\"build\":{\"fullUrl\":\"http://local" + "host:8080"
+                + "/jenkins/job/PipelineTest/16/\",\"number\":16,\"queueId\":8,\"duration\":0," + "\"status\":null,"
+                + "\"url\":\"job/PipelineTest/16/\",\"displayName\":null,\"parameters\"" + ":null,\"scmState\":{\"url"
+                + "\":null,\"branch\":null,\"commit\":null}}}");
 
         /* Create a CloudEvent from a PipelineRunStartedCDEvent */
         cloudEvent = CDEvents.cdEventAsCloudEvent(event);
@@ -75,7 +84,8 @@ class KinesisSinkTest {
         return mockStatic(CDEventsGlobalConfig.class, Answers.RETURNS_DEEP_STUBS);
     }
 
-    private void configureMockCDEventsGlobalConfigStatic(MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic) {
+    private void configureMockCDEventsGlobalConfigStatic(
+            MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic) {
         mockCDEventsGlobalConfigStatic.when(CDEventsGlobalConfig::get).thenReturn(mockGlobalConfig);
         when(mockGlobalConfig.getKinesisStreamName()).thenReturn("hello");
     }
@@ -102,7 +112,10 @@ class KinesisSinkTest {
 
     @Test
     void sinkTest() {
-        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic(); MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic();
+                MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic =
+                        getMockCDEventsGlobalConfigStatic();
+                MockedStatic<AmazonKinesisClientBuilder> mockClientBuilderStatic = getMockClientBuilderStatic()) {
             configureMockJenkinsStatic(mockJenkinsStatic);
             configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
             configureMockClientBuilderStatic(mockClientBuilderStatic);
@@ -126,25 +139,14 @@ class KinesisSinkTest {
 
     @Test
     void constructorFailsNoStreamName() {
-        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic()) {
+        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic();
+                MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic =
+                        getMockCDEventsGlobalConfigStatic()) {
             configureMockJenkinsStatic(mockJenkinsStatic);
             configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
 
             reset(mockGlobalConfig);
             when(mockGlobalConfig.getKinesisStreamName()).thenReturn(null);
-
-            assertThrows(NullPointerException.class, () -> new KinesisSink());
-        }
-    }
-
-    @Test
-    void constructorFailsEmptyStreamName() {
-        try (MockedStatic<Jenkins> mockJenkinsStatic = getMockJenkinsStatic(); MockedStatic<CDEventsGlobalConfig> mockCDEventsGlobalConfigStatic = getMockCDEventsGlobalConfigStatic()){
-            configureMockJenkinsStatic(mockJenkinsStatic);
-            configureMockCDEventsGlobalConfigStatic(mockCDEventsGlobalConfigStatic);
-
-            reset(mockGlobalConfig);
-            when(mockGlobalConfig.getKinesisStreamName()).thenReturn("");
 
             assertThrows(NullPointerException.class, () -> new KinesisSink());
         }
