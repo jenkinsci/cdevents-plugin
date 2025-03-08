@@ -119,9 +119,10 @@ public class EventHandler {
             eventState = EventState.STARTED;
         }
 
+        FlowExecutionOwner owner = node.getExecution().getOwner();
         Queue.Executable exec;
         try {
-            exec = node.getExecution().getOwner().getExecutable();
+            exec = owner.getExecutable();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
