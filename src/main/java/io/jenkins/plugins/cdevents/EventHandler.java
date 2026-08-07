@@ -13,7 +13,6 @@ import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.sinks.HttpSink;
 import io.jenkins.plugins.cdevents.sinks.KinesisSink;
 import io.jenkins.plugins.cdevents.sinks.SyslogSink;
-import org.apache.commons.lang.NotImplementedException;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 
@@ -100,7 +99,7 @@ public class EventHandler {
                     sink = new SyslogSink();
                     break;
                 default:
-                    throw new NotImplementedException("The following sink type " + sinkType + " is not supported");
+                    throw new UnsupportedOperationException("The following sink type " + sinkType + " is not supported");
             }
 
             sink.sendCloudEvent(cloudEvent);
