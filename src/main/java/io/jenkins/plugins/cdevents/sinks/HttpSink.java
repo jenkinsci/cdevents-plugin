@@ -5,6 +5,8 @@
 
 package io.jenkins.plugins.cdevents.sinks;
 
+import io.cloudevents.core.format.EventSerializationException;
+import io.cloudevents.jackson.JsonFormat;
 import io.cloudevents.CloudEvent;
 import io.jenkins.plugins.cdevents.CDEventsGlobalConfig;
 import io.jenkins.plugins.cdevents.CDEventsSink;
@@ -15,32 +17,43 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import hudson.ProxyConfiguration;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HttpSink extends CDEventsSink {
 
     private static final Logger LOGGER = Logger.getLogger("HttpSink");
-    private static final String sinkUrl = CDEventsGlobalConfig.get().getHttpSinkUrl();
+    private static final String STRUCTURED_CONTENT_TYPE = "application/cloudevents+json";
     private final ProxyConfiguration proxy = Jenkins.get().proxy;
+
+    static String serializeCloudEvent(CloudEvent cloudEvent) throws IOException {
+        try {
+            byte[] serialized = new JsonFormat().serialize(cloudEvent);
+            return new String(serialized, StandardCharsets.UTF_8);
+        } catch (EventSerializationException e) {
+            throw new IOException("Failed to serialize CloudEvent to structured JSON", e);
+        }
+    }
+
+    private static String getSinkUrl() {
+        return CDEventsGlobalConfig.get().getHttpSinkUrl();
+    }
 
     @Override
     public void sendCloudEvent(CloudEvent cloudEvent) throws IOException {
+        String sinkUrl = getSinkUrl();
         LOGGER.log(Level.INFO, "Now attempting to send to the HTTP endpoint " + sinkUrl
                 + " the following CloudEvent " + cloudEvent);
         HttpPost httpPost = new HttpPost(sinkUrl);
-        // TODO need to test the string conversion and using the Apache HTTP library is
-        // successful
-        StringEntity entity = new StringEntity(cloudEvent.toString());
+        StringEntity entity = new StringEntity(serializeCloudEvent(cloudEvent), StandardCharsets.UTF_8);
         httpPost.setEntity(entity);
         httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setHeader("Content-type", STRUCTURED_CONTENT_TYPE);
 
         HttpHost httpProxy = (proxy != null ? new HttpHost(proxy.name, proxy.port) : null);
         try (CloseableHttpClient client = HttpClientBuilder.create()
@@ -48,8 +61,11 @@ public class HttpSink extends CDEventsSink {
                 .setProxy(httpProxy)
                 .build();
              CloseableHttpResponse response = client.execute(httpPost)) {
-            JSONObject sinkResponse = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
-            LOGGER.log(Level.INFO, "Response from HTTP Sink Endpoint: " + sinkResponse);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                throw new IOException("HTTP sink endpoint returned HTTP " + statusCode);
+            }
+            LOGGER.log(Level.INFO, "Response from HTTP Sink Endpoint: HTTP " + statusCode);
         }
     }
 }
