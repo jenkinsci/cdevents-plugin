@@ -17,8 +17,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import hudson.ProxyConfiguration;
 
@@ -63,8 +61,11 @@ public class HttpSink extends CDEventsSink {
                 .setProxy(httpProxy)
                 .build();
              CloseableHttpResponse response = client.execute(httpPost)) {
-            JSONObject sinkResponse = new JSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
-            LOGGER.log(Level.INFO, "Response from HTTP Sink Endpoint: " + sinkResponse);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode < 200 || statusCode >= 300) {
+                throw new IOException("HTTP sink endpoint returned HTTP " + statusCode);
+            }
+            LOGGER.log(Level.INFO, "Response from HTTP Sink Endpoint: HTTP " + statusCode);
         }
     }
 }
